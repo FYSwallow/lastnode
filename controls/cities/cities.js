@@ -132,17 +132,28 @@ const guessPosition = async (req, res) => {
 
 // 通过ip地址获取精确位置
 const geocoder = async (req, res) => {
+    console.log(123)
     try {
         const address = await guessPosition(req);
+        console.log(address)
         const params = {
             key: tencentkey,
             location: address.lat + ',' + address.lng
         };
         const response = await ajax('http://apis.map.qq.com/ws/geocoder/v1/', params);
         const result = response.data;
-
+        console.log(result)
         if (result.status == 0) {
-            res.send(result.result)
+            const cityInfo = {
+                latitude: result.result.location.lat,
+                longitude: result.result.location.lng,
+                address: result.result.address,
+            }
+            console.log(cityInfo)
+            res.send({
+                status: 1,
+                data: cityInfo
+            })
         } else {
             res.send({
                 name: 'ERROR_QUERY_TYPE',
@@ -187,7 +198,10 @@ const getPois = async (req, res) => {
 				longitude: poisArr[1],
 				name: result.result.formatted_addresses.recommend,
 			}
-            res.send(address)
+            res.send({
+                status: 1,
+                data: address
+            })
         } else {
             res.send(
                 {

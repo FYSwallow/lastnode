@@ -17,5 +17,6 @@ const foodCategory = async (req, res) => {
 }
 
 module.exports = {
-    foodCategory
+    foodCategory,
+    
 }

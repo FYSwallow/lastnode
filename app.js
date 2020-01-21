@@ -5,10 +5,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
+var BaseRouter = require('./routes/base');
 var usersRouter = require('./routes/users');
 var citiesRouter = require('./routes/cities');
 var foodsRouter = require('./routes/foods');
 var shopRouter = require('./routes/shop');
+var adminRouter = require('./routes/admin');
 
 //连接数据库
 const mongodb = require('./mongodb/connect')
@@ -26,10 +28,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/base', BaseRouter);
 app.use('/users', usersRouter);
 app.use('/v1', citiesRouter);
 app.use('/v2', foodsRouter);
 app.use('/shopping', shopRouter);
+app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
