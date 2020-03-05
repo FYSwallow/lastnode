@@ -10,9 +10,11 @@ const tencentkey = "RRXBZ-WC6KF-ZQSJT-N2QU7-T5QIT-6KF5X"
 const getCity = async (req, res) => {
     const type = req.query.type;
     let cityInfo;
+    console.log(type)
     switch (type) {
         case "guess":
             const userCity = await guessPosition(req, res);
+            console.log(userCity)
             city = await getCityName(userCity);
             cityInfo = await cityGuess(CitiesModel, city);
             break;
@@ -29,7 +31,7 @@ const getCity = async (req, res) => {
             })
             return
     }
-    res.send(cityInfo)
+    res.send( cityInfo)
 }
 
 //根据城市ip获取城市地址详情
@@ -65,7 +67,7 @@ const search = async (req, res) => {
         try {
             const city = await guessPosition(req);
             const cityName = await getCityName(city);
-            const cityInfo = await cityGuess(cityName);
+            const cityInfo = await cityGuess(CitiesModel, cityName);
             city_id = cityInfo.id;
         } catch (error) {
             res.send({
@@ -132,32 +134,25 @@ const guessPosition = async (req, res) => {
 
 // 通过ip地址获取精确位置
 const geocoder = async (req, res) => {
-    console.log(123)
     try {
         const address = await guessPosition(req);
-        console.log(address)
         const params = {
             key: tencentkey,
             location: address.lat + ',' + address.lng
         };
         const response = await ajax('http://apis.map.qq.com/ws/geocoder/v1/', params);
         const result = response.data;
-        console.log(result)
         if (result.status == 0) {
             const cityInfo = {
                 latitude: result.result.location.lat,
                 longitude: result.result.location.lng,
                 address: result.result.address,
             }
-            console.log(cityInfo)
-            res.send({
-                status: 1,
-                data: cityInfo
-            })
+            res.send(cityInfo)
         } else {
             res.send({
                 name: 'ERROR_QUERY_TYPE',
-                message: '参数错误',
+                message: err,
             })
         }
     } catch (err) {
@@ -172,6 +167,8 @@ const geocoder = async (req, res) => {
 const getPois = async (req, res) => {
     try {
         const geohash = req.params.geohash || '';
+        console.log(geohash)
+
         if (geohash.indexOf(',') == -1) {
             res.send({
                 status: 0,
@@ -191,13 +188,13 @@ const getPois = async (req, res) => {
 
         if (result.status == 0) {
             const address = {
-				address: result.result.address,
-				city: result.result.address_component.province,
-				geohash,
-				latitude: poisArr[0],
-				longitude: poisArr[1],
-				name: result.result.formatted_addresses.recommend,
-			}
+                address: result.result.address,
+                city: result.result.address_component.province,
+                geohash,
+                latitude: poisArr[0],
+                longitude: poisArr[1],
+                name: result.result.formatted_addresses.recommend,
+            }
             res.send({
                 status: 1,
                 data: address

@@ -14,6 +14,7 @@ const idsSchema = new mongoose.Schema({
 	sku_id: Number, 
 	admin_id: Number,
 	statis_id: Number,
+	shop_category_id: Number,
 });
 
 const IdsModel = mongoose.model('Ids', idsSchema);

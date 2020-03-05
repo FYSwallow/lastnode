@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost:27017/elmnode')
+mongoose.connect('mongodb://localhost:27017/elm', { useNewUrlParser: true })
 
 const conn = mongoose.connection
 conn.on('connected', () => {
